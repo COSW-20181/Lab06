@@ -19,13 +19,23 @@ package edu.eci.cosw.examples.productorders.services;
 import edu.eci.cosw.examples.productorders.repositories.DispatchRepository;
 import edu.eci.cosw.examples.productorders.repositories.OrdersRepository;
 import edu.eci.cosw.examples.productorders.repositories.ProductsRepository;
+import edu.eci.cosw.examples.productorders.repositories.VehiclesRepository;
 import edu.eci.cosw.samples.model.Despacho;
 import edu.eci.cosw.samples.model.Pedido;
 import edu.eci.cosw.samples.model.Producto;
+import edu.eci.cosw.samples.model.Vehiculo;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import javax.sql.rowset.serial.SerialBlob;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /**
  *
@@ -65,5 +75,10 @@ public class ApplicationServicesImpl implements ApplicationServices{
         return disprepo.findOne(id);
     }
     
+    @Override
+    public InputStream dispatchQRByID(Integer id) throws ServicesException, SQLException {
+        return disprepo.dispatchQRByID(id).getQrcode().getBinaryStream();
+    }
+
     
 }

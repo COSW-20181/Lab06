@@ -1,0 +1,23 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package edu.eci.cosw.examples.productorders.repositories;
+
+import edu.eci.cosw.examples.productorders.services.ServicesException;
+import edu.eci.cosw.samples.model.Vehiculo;
+import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+/**
+ *
+ * @author 2105409
+ */
+public interface VehiclesRepository extends JpaRepository<Vehiculo, String>{
+    
+    @Query("select d.vehiculo from Despacho d  inner join d.pedidos as p  inner join p.detallesPedidos as dp inner join dp.producto as prod with prod.idproducto=?1")
+    public List<Vehiculo> vehicleByProductId(Integer productId) throws ServicesException;
+    
+}

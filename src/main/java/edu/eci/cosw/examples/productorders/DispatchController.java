@@ -32,6 +32,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import edu.eci.cosw.examples.productorders.services.ApplicationServices;
 import edu.eci.cosw.examples.productorders.services.ServicesException;
+import java.io.IOException;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /**
  *
@@ -56,5 +59,22 @@ public class DispatchController {
         }
     }
 
+    @RequestMapping(value = "/{id}/qrcode", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<InputStreamResource> getQRCode(@PathVariable Integer id) {
+        try {            
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType("image/png"))
+                    .body(new InputStreamResource(services.dispatchQRByID(id)));
+        } catch (ServicesException ex) {
+            Logger.getLogger(DispatchController.class.getName()).log(Level.SEVERE, null, ex);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DispatchController.class.getName()).log(Level.SEVERE, null, ex);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    
+    }
     
 }
