@@ -16,9 +16,11 @@
  */
 package edu.eci.cosw.examples.productorders.services;
 
+import edu.eci.cosw.samples.model.Cliente;
 import edu.eci.cosw.samples.model.Despacho;
 import edu.eci.cosw.samples.model.Pedido;
 import edu.eci.cosw.samples.model.Producto;
+import edu.eci.cosw.samples.model.Vehiculo;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
@@ -40,6 +42,12 @@ public interface ApplicationServices {
     public Despacho dispatchByID(Integer id) throws ServicesException;
     
     public InputStream dispatchQRByID(Integer id) throws ServicesException,SQLException;
+    
+    public List<Cliente> clienteByPrice(Integer price) throws ServicesException;
+    
+    public List<Vehiculo> vehicleByProductId(Integer productId) throws ServicesException;
+    
+    public void addDispatch(MultipartHttpServletRequest request,int idpedido, String idVehiculo) throws ServicesException,IOException,SQLException;
     
     
 }

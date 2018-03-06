@@ -16,10 +16,13 @@
  */
 package edu.eci.cosw.examples.productorders.services;
 
+import static com.sun.corba.se.spi.presentation.rmi.StubAdapter.request;
+import edu.eci.cosw.examples.productorders.repositories.ClientsRepository;
 import edu.eci.cosw.examples.productorders.repositories.DispatchRepository;
 import edu.eci.cosw.examples.productorders.repositories.OrdersRepository;
 import edu.eci.cosw.examples.productorders.repositories.ProductsRepository;
 import edu.eci.cosw.examples.productorders.repositories.VehiclesRepository;
+import edu.eci.cosw.samples.model.Cliente;
 import edu.eci.cosw.samples.model.Despacho;
 import edu.eci.cosw.samples.model.Pedido;
 import edu.eci.cosw.samples.model.Producto;
@@ -28,15 +31,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.sql.rowset.serial.SerialBlob;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-
 /**
  *
  * @author hcadavid
@@ -51,7 +54,14 @@ public class ApplicationServicesImpl implements ApplicationServices{
     private ProductsRepository prorepo;
     
     @Autowired
+    private VehiclesRepository verepo;
+
+    @Autowired
+    private ClientsRepository clirepo;
+    
+    @Autowired
     private DispatchRepository disprepo;
+    
     
     @Override
     public List<Pedido> getAllOrders() throws ServicesException{
@@ -80,5 +90,34 @@ public class ApplicationServicesImpl implements ApplicationServices{
         return disprepo.dispatchQRByID(id).getQrcode().getBinaryStream();
     }
 
+    @Override
+    public List<Cliente> clienteByPrice(Integer price) throws ServicesException {
+        return clirepo.clienteByPrice(price);
+    }
+
+    @Override
+    public List<Vehiculo> vehicleByProductId(Integer productId) throws ServicesException {
+        return verepo.vehicleByProductId(productId);
+    }
+
+    @Override
+    public void addDispatch(MultipartHttpServletRequest request, int idpedido, String idVehiculo) throws ServicesException, IOException, SQLException {
+        Iterator<String> itr = request.getFileNames();
+
+        while (itr.hasNext()) {
+            String uploadedFile = itr.next();
+            MultipartFile file = request.getFile(uploadedFile);
+
+            Pedido p = ordrepo.findOne(idpedido);
+            Vehiculo v = verepo.findOne(idVehiculo);
+
+            Despacho d = new Despacho(p, v);
+
+            d.setQrcode(new SerialBlob(StreamUtils.copyToByteArray(file.getInputStream())));
+
+            disprepo.save(d);
+        }
+        
+    }
     
 }

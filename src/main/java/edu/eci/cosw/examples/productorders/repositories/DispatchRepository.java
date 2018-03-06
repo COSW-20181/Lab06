@@ -18,8 +18,10 @@ package edu.eci.cosw.examples.productorders.repositories;
 
 import edu.eci.cosw.examples.productorders.services.ServicesException;
 import edu.eci.cosw.samples.model.Despacho;
+import edu.eci.cosw.samples.model.Pedido;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
 
 /**
  *
