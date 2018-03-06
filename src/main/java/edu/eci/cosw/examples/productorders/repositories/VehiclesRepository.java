@@ -5,6 +5,7 @@
  */
 package edu.eci.cosw.examples.productorders.repositories;
 
+
 import edu.eci.cosw.examples.productorders.services.ServicesException;
 import edu.eci.cosw.samples.model.Despacho;
 import edu.eci.cosw.samples.model.Producto;
@@ -12,11 +13,11 @@ import edu.eci.cosw.samples.model.Vehiculo;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
 /**
  *
- * @author 2105409
+ * @author hernan.losada
  */
-
 public interface VehiclesRepository extends JpaRepository<Vehiculo, String>{
     
     @Query("select d.vehiculo from Despacho d  inner join d.pedidos as p  inner join p.detallesPedidos as dp inner join dp.producto as prod with prod.idproducto=?1")

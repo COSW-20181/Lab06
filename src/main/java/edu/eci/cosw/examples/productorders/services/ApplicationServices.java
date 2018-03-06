@@ -23,6 +23,7 @@ import edu.eci.cosw.samples.model.Producto;
 import edu.eci.cosw.samples.model.Vehiculo;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.List;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -48,6 +49,5 @@ public interface ApplicationServices {
     public List<Vehiculo> vehicleByProductId(Integer productId) throws ServicesException;
     
     public void addDispatch(MultipartHttpServletRequest request,int idpedido, String idVehiculo) throws ServicesException,IOException,SQLException;
-    
     
 }

@@ -19,5 +19,5 @@ public interface ClientsRepository extends JpaRepository<Cliente, Integer>{
 
    @Query("select p.cliente from Pedido p left join p.detallesPedidos as dp left join dp.producto as prod with prod.precio>?1")
     public List<Cliente> clienteByPrice(Integer price) throws ServicesException;
-
+    
 }

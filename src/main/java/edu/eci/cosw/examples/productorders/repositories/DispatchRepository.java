@@ -22,7 +22,6 @@ import edu.eci.cosw.samples.model.Pedido;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-
 /**
  *
  * @author hcadavid

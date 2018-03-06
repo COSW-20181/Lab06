@@ -29,8 +29,10 @@ import edu.eci.cosw.samples.model.Producto;
 import edu.eci.cosw.samples.model.Vehiculo;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,51 +42,50 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+
 /**
  *
  * @author hcadavid
  */
 @Service
-public class ApplicationServicesImpl implements ApplicationServices{
-   
+public class ApplicationServicesImpl implements ApplicationServices {
+
     @Autowired
     private OrdersRepository ordrepo;
 
     @Autowired
     private ProductsRepository prorepo;
-    
+
+    @Autowired
+    private DispatchRepository disprepo;
+
     @Autowired
     private VehiclesRepository verepo;
 
     @Autowired
     private ClientsRepository clirepo;
-    
-    @Autowired
-    private DispatchRepository disprepo;
-    
-    
+
     @Override
-    public List<Pedido> getAllOrders() throws ServicesException{
-        List<Pedido> p=ordrepo.findAll();
+    public List<Pedido> getAllOrders() throws ServicesException {
+        List<Pedido> p = ordrepo.findAll();
         return p;
     }
 
     @Override
-    public List<Producto> getAllProducts() throws ServicesException{
-        return  prorepo.findAll();
+    public List<Producto> getAllProducts() throws ServicesException {
+        return prorepo.findAll();
     }
 
     @Override
-    public Pedido orderById(Integer id) throws ServicesException{
+    public Pedido orderById(Integer id) throws ServicesException {
         return ordrepo.findOne(id);
     }
-    
-    
+
     @Override
-    public Despacho dispatchByID(Integer id) throws ServicesException{
+    public Despacho dispatchByID(Integer id) throws ServicesException {
         return disprepo.findOne(id);
     }
-    
+
     @Override
     public InputStream dispatchQRByID(Integer id) throws ServicesException, SQLException {
         return disprepo.dispatchQRByID(id).getQrcode().getBinaryStream();
@@ -103,21 +104,15 @@ public class ApplicationServicesImpl implements ApplicationServices{
     @Override
     public void addDispatch(MultipartHttpServletRequest request, int idpedido, String idVehiculo) throws ServicesException, IOException, SQLException {
         Iterator<String> itr = request.getFileNames();
-
         while (itr.hasNext()) {
             String uploadedFile = itr.next();
             MultipartFile file = request.getFile(uploadedFile);
-
             Pedido p = ordrepo.findOne(idpedido);
             Vehiculo v = verepo.findOne(idVehiculo);
-
             Despacho d = new Despacho(p, v);
-
             d.setQrcode(new SerialBlob(StreamUtils.copyToByteArray(file.getInputStream())));
-
             disprepo.save(d);
         }
-        
     }
-    
+
 }
